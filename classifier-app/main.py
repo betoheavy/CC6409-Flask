@@ -4,12 +4,7 @@ from app import app
 import requests
 from flask import request, redirect, url_for, render_template
 from werkzeug.utils import secure_filename
-
-ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
-
-
-def allowed_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+from utils import allowed_file
 
 
 @app.route('/')
@@ -19,6 +14,7 @@ def index_form():
 
 @app.route('/', methods=['POST'])
 def index_image():
+    print("Ola")
     if 'file' not in request.files:
         error = 'No se envió ningún archivo'
         return render_template('index.html', error=error)
