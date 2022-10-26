@@ -28,6 +28,7 @@ def index_image():
         filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         file.save(filepath)
         files = {'file': open(filepath, 'rb')}
+        print(files)
         apicall = requests.post(API_URL, files=files)
         if apicall.status_code == 200:
             error = None
