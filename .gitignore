@@ -1,5 +1,5 @@
 
-classifier-app/static/uploads/
+classifier-app/static/uploads/*
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
