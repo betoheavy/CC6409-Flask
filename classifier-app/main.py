@@ -4,9 +4,10 @@ from app import app, API_URL
 import requests
 from flask import request, redirect, url_for, render_template
 from werkzeug.utils import secure_filename
-from utils import allowed_file
+from utils import allowed_file, get_closest_match
 import secrets
-
+import torch
+import io
 
 @app.route('/')
 def index_form():
@@ -28,15 +29,16 @@ def index_image():
         filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         file.save(filepath)
         files = {'file': open(filepath, 'rb')}
-        print(files)
         apicall = requests.post(API_URL, files=files)
         if apicall.status_code == 200:
             error = None
-            apicall = json.loads(apicall.content.decode('utf-8'))
-            result = {'predicted_label': apicall['class_name'], 'class_id': apicall['class_id']}
+            features = torch.load(io.BytesIO(apicall.content))
+            print(features)
+            closest_filename = get_closest_match(features)
+            result = {'closest_filename': closest_filename}
         else:
             error = 'Error al procesar la imagen'
-            result = {'predicted_label': None, 'class_id': None}
+            result = None
         return render_template('index.html', filename=filename, result=result, error=error)
     else:
         error = 'Archivo no permitido. Solo se permite JPG, JPEG o PNG.'

@@ -20,18 +20,18 @@
         <button class="hvr-grow-shadow" type="submit">Enviar</button>
     </form>
     {% if filename %}
-    {% if result['predicted_label'] is not none %}
-    <div class="response response-ok">
-        Clase predicha: <b>{{ result['predicted_label'] }}</b>
-    </div>
+    {% if result['closest_filename'] is not none %}
+    Match predicho:
+    <img alt="Uploaded image" class="uploaded-image" src="{{ url_for('display_image' , filename=result['closest_filename']) }}">
     {% else %}
     <div class="response response-error">
-        Error de predicción. No se encontró ninguna clase.
+        Error de predicción. No se encontró ningún match.
         {% if error %}
         <div>Detalle del error: {{error}}</div>
         {% endif %}
     </div>
     {% endif %}
+    Imagen original:
     <img alt="Uploaded image" class="uploaded-image" src="{{ url_for('display_image' , filename=filename) }}">
     {% endif %}
     {% if not filename and error %}

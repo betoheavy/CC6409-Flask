@@ -1,6 +1,9 @@
 from app import app
-from utils import get_prediction
+from utils import get_prediction, get_features
 from flask import Flask, jsonify, request
+import base64
+import io
+import torch
 
 
 @app.route('/predict', methods=['POST'])
@@ -8,8 +11,19 @@ def predict():
     if request.method == 'POST':
         file = request.files['file']
         img_bytes = file.read()
-        class_id, class_name = get_prediction(image_bytes=img_bytes)
-        return jsonify({'class_id': class_id, 'class_name': class_name})
+
+        # Obtenemos las features
+        deep_features = get_features(image_bytes=img_bytes)
+        # deep_features es un diccionario bloque:features, pero solo usamos 1 bloque
+        # (o sea, hay una sola llave).
+        deep_features = list(deep_features.values())[0]
+        # print(deep_features)
+
+        # Las pasamos a bytes usando un buffer I/O
+        buff = io.BytesIO()
+        torch.save(deep_features, buff)
+        buff.seek(0)
+        return buff  # return buff.read()
 
 
 if __name__ == "__main__":

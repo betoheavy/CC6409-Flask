@@ -1,8 +1,8 @@
-from app import model, imagenet_class_index
+from app import model, imagenet_class_index, feature_extractor
 import io
-
 import torchvision.transforms as transforms
 from PIL import Image
+
 
 def transform_image(image_bytes):
     my_transforms = transforms.Compose([transforms.Resize(255),
@@ -21,3 +21,12 @@ def get_prediction(image_bytes):
     _, y_hat = outputs.max(1)
     predicted_idx = str(y_hat.item())
     return imagenet_class_index[predicted_idx]
+
+
+# out será un diccionario{'bloque': tensor}
+# podríamos sacar features de más de un bloque.
+# la llave será el nombre del bloque según nodes (variable en app.py)
+def get_features(image_bytes):
+    tensor = transform_image(image_bytes=image_bytes)
+    out = feature_extractor(tensor)
+    return out
