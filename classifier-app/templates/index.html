@@ -22,7 +22,9 @@
     {% if filename %}
     {% if result['predicted_label'] is not none %}
     <div class="response response-ok">
-        Clase predicha: <b>{{ result['predicted_label'] }}</b>
+        Clase predicha: <b>{{ result['predicted_label'] }}</b><br>
+        ID de clase: <b>{{ result['class_id'] }}</b><br>
+        SCORE: <b>{{ result['score'] }}</b>
     </div>
     {% else %}
     <div class="response response-error">

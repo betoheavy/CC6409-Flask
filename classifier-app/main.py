@@ -33,7 +33,7 @@ def index_image():
         if apicall.status_code == 200:
             error = None
             apicall = json.loads(apicall.content.decode('utf-8'))
-            result = {'predicted_label': apicall['class_name'], 'class_id': apicall['class_id']}
+            result = {'predicted_label': apicall['class_name'], 'class_id': apicall['class_id'], 'score':apicall['score']}
         else:
             error = 'Error al procesar la imagen'
             result = {'predicted_label': None, 'class_id': None}

@@ -2,6 +2,7 @@ from app import model, imagenet_class_index
 import io
 
 import torchvision.transforms as transforms
+import torch.nn as nn
 from PIL import Image
 
 def transform_image(image_bytes):
@@ -18,6 +19,10 @@ def transform_image(image_bytes):
 def get_prediction(image_bytes):
     tensor = transform_image(image_bytes=image_bytes)
     outputs = model.forward(tensor)
-    _, y_hat = outputs.max(1)
+
+    softmax = nn.Softmax(dim=1)
+    outputs = softmax(outputs)
+
+    x, y_hat = outputs.max(1)
     predicted_idx = str(y_hat.item())
-    return imagenet_class_index[predicted_idx]
+    return imagenet_class_index[predicted_idx][0] , imagenet_class_index[predicted_idx][1], x.item()
